@@ -2,6 +2,7 @@ package spentcalories
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -60,8 +61,45 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 }
 
 func TrainingInfo(data string, weight, height float64) (string, error) {
-	// TODO: реализовать функцию
-	return "", nil
+	steps, typeOfActivity, times, err1 := parseTraining(data)
+	if err1 != nil {
+		log.Println(err1)
+		return "", fmt.Errorf("error: %w", err1)
+	}
+
+	//dist - дистанция
+	dist := distance(steps, height)
+	midSpeed := meanSpeed(steps, height, times)
+
+	switch typeOfActivity {
+	case "Бег":
+		callories, err2 := RunningSpentCalories(steps, weight, height, times)
+		if err2 != nil {
+			return "", fmt.Errorf("error: %w", err2)
+		}
+
+		result := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+			typeOfActivity,
+			times.Hours(),
+			dist, midSpeed,
+			callories)
+
+		return result, nil
+	case "Ходьба":
+		callories, err3 := WalkingSpentCalories(steps, weight, height, times)
+		if err3 != nil {
+			return "", fmt.Errorf("error: %w", err3)
+		}
+		result := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+			typeOfActivity,
+			times.Hours(),
+			dist, midSpeed,
+			callories)
+
+		return result, nil
+	default:
+		return "", fmt.Errorf("Нет такого типа")
+	}
 }
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
