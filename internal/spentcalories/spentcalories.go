@@ -80,6 +80,17 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 }
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
-	// TODO: реализовать функцию
-	return 0, nil
+	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
+		return 0, fmt.Errorf("The values  ​are incorrect.")
+	}
+
+	calories, err := RunningSpentCalories(steps, weight, height, duration)
+
+	if err != nil {
+		return 0, fmt.Errorf("error: %w", err)
+	}
+
+	result := calories * walkingCaloriesCoefficient
+
+	return result, nil
 }
