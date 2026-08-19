@@ -30,6 +30,10 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 		return 0, "", 0, fmt.Errorf("error: %w", err1)
 	}
 
+	if numberOfStep <= 0 {
+		return 0, "", 0, fmt.Errorf("steps must be greater than 0")
+	}
+
 	//walkingDuration время прогулки
 	walkingDuration, err2 := time.ParseDuration(splitString[2])
 	if err2 != nil {
@@ -44,7 +48,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 }
 
 func distance(steps int, height float64) float64 {
-	distance := float64(steps) * height * stepLengthCoefficient
+	distance := float64(steps) * height * stepLengthCoefficient / 1000
 	return distance
 }
 
@@ -78,7 +82,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 			return "", fmt.Errorf("error: %w", err2)
 		}
 
-		result := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+		result := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 			typeOfActivity,
 			times.Hours(),
 			dist, midSpeed,
@@ -90,7 +94,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 		if err3 != nil {
 			return "", fmt.Errorf("error: %w", err3)
 		}
-		result := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+		result := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 			typeOfActivity,
 			times.Hours(),
 			dist, midSpeed,
@@ -98,7 +102,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 
 		return result, nil
 	default:
-		return "", fmt.Errorf("Нет такого типа")
+		return "", fmt.Errorf("неизвестный тип тренировки: %s", typeOfActivity)
 	}
 }
 
@@ -110,9 +114,9 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 	midSpeed := meanSpeed(steps, height, duration)
 
 	// times - время в минутах
-	times := duration.Hours() / 60
+	times := duration.Hours()
 
-	calories := weight * midSpeed * float64(times) / minInH
+	calories := weight * midSpeed * float64(times)
 
 	return calories, nil
 }

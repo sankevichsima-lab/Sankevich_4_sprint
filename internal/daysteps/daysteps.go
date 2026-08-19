@@ -18,7 +18,7 @@ const (
 
 func parsePackage(data string) (int, time.Duration, error) {
 
-	//stepTimeStr - количество шагов
+	//stepTimeStr - количество шагов и время
 	stepTimeStr := strings.Split(data, ",")
 	if len(stepTimeStr) != 2 {
 		return 0, 0, fmt.Errorf("lenght not 2")
@@ -27,7 +27,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 	steps, err1 := strconv.Atoi(stepTimeStr[0])
 
 	if err1 != nil {
-		return 0, 0, fmt.Errorf("error: %s", err1)
+		return 0, 0, fmt.Errorf("error: %w", err1)
 	}
 
 	if steps < 1 {
@@ -37,7 +37,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 	//walkingDuration время прогулки
 	walkingDuration, err2 := time.ParseDuration(stepTimeStr[1])
 	if err2 != nil {
-		return 0, 0, fmt.Errorf("error: %s", err2)
+		return 0, 0, fmt.Errorf("error: %w", err2)
 	}
 
 	if walkingDuration <= 0 {
@@ -50,7 +50,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 func DayActionInfo(data string, weight, height float64) string {
 	steps, walkingDuration, err1 := parsePackage(data)
 	if err1 != nil {
-		return err1.Error()
+		return ""
 	}
 
 	distance := float64(steps) * stepLength / mInKm
@@ -60,5 +60,6 @@ func DayActionInfo(data string, weight, height float64) string {
 		return err2.Error()
 	}
 
-	return fmt.Sprintf("Количество шагов: %d\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.", steps, distance, calories)
+	return fmt.Sprintf( // Ожидаемый формат:
+		"Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", steps, distance, calories)
 }
