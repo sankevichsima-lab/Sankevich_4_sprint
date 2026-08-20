@@ -24,10 +24,10 @@ func parsePackage(data string) (int, time.Duration, error) {
 		return 0, 0, fmt.Errorf("lenght not 2")
 	}
 
-	steps, err1 := strconv.Atoi(stepTimeStr[0])
+	steps, err := strconv.Atoi(stepTimeStr[0])
 
-	if err1 != nil {
-		return 0, 0, fmt.Errorf("error: %w", err1)
+	if err != nil {
+		return 0, 0, fmt.Errorf("%w", err)
 	}
 
 	if steps < 1 {
@@ -35,9 +35,9 @@ func parsePackage(data string) (int, time.Duration, error) {
 	}
 
 	//walkingDuration время прогулки
-	walkingDuration, err2 := time.ParseDuration(stepTimeStr[1])
-	if err2 != nil {
-		return 0, 0, fmt.Errorf("error: %w", err2)
+	walkingDuration, err := time.ParseDuration(stepTimeStr[1])
+	if err != nil {
+		return 0, 0, fmt.Errorf("%w", err)
 	}
 
 	if walkingDuration <= 0 {

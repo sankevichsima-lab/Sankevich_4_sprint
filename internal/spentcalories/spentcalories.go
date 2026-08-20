@@ -48,7 +48,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 }
 
 func distance(steps int, height float64) float64 {
-	distance := float64(steps) * height * stepLengthCoefficient / 1000
+	distance := float64(steps) * height * stepLengthCoefficient / mInKm
 	return distance
 }
 
@@ -61,7 +61,7 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 
 	walkTime := duration.Hours()
 
-	return distance / float64(walkTime)
+	return distance / walkTime
 }
 
 func TrainingInfo(data string, weight, height float64) (string, error) {
@@ -122,8 +122,17 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 }
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
-	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
-		return 0, fmt.Errorf("The values  ​are incorrect.")
+	if steps <= 0 {
+		return 0, fmt.Errorf("the values  ​are incorrect.")
+	}
+	if weight <= 0 {
+		return 0, fmt.Errorf("the values  ​are incorrect.")
+	}
+	if height <= 0 {
+		return 0, fmt.Errorf("the values  ​are incorrect.")
+	}
+	if duration <= 0 {
+		return 0, fmt.Errorf("the values  ​are incorrect.")
 	}
 
 	calories, err := RunningSpentCalories(steps, weight, height, duration)
